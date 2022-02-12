@@ -16,6 +16,4 @@ $array_response["status"] = "User Unblocked";
 $json_response = json_encode($array_response);
 echo $json_response;
 
-
-
 ?>
