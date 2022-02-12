@@ -2,8 +2,8 @@
 
 include("db_info.php");
 
-$sender_id = 3;
-$receiver_id = 4;
+$sender_id = 1;
+$receiver_id = 2;
 $accepted = false;
 
 $query = $mysqli -> prepare("INSERT INTO friendships(sender, receiver, accepted) VALUES (?, ?, ?)"); 
