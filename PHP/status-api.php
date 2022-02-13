@@ -7,9 +7,9 @@ include("db_info.php");
 $post = $_POST["post"];
 $user_id = $_POST["user_id"];
 
-$query1 = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
-$query1->bind_param("si", $post, $user_id);
-$query1->execute();
+$query = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
+$query->bind_param("si", $post, $user_id);
+$query->execute();
 
 $array_response = [];
 $array_response["status"] = $post;
