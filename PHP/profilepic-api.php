@@ -5,7 +5,7 @@ include("db_info.php");
 $picture = $_POST["picture"];
 $user_id = $_POST["id"];
 
-$query = $mysqli->prepare("INSERT INTO users picture=? WHERE users.id = ?"); 
+$query = $mysqli->prepare("UPDATE users  SET picture=? WHERE users.id = ?"); 
 $query->bind_param("si", $picture, $user_id);
 $query->execute();
 
