@@ -6,33 +6,27 @@ include("db_info.php");
 
 if(empty($_POST["first_name"])){
     die("Please Enter a First Name"); 
-} else {  
-    $first_name = $_POST["first_name"];
-    if(ctype_alpha($first_name)){
-        $first_name = $mysqli->real_escape_string($_POST["first_name"]);
-    }else{
-        die("Please Enter only alphabets");
-    }
+}elseif(ctype_alpha($_POST["first_name"])){
+    $first_name = $mysqli->real_escape_string($_POST["first_name"]);
+}else{
+    die("Please Enter only alphabets");
 }  
 
 // Last Name Validation
 
 if(empty($_POST["last_name"])){
     die("Please Enter a Last Name"); 
-} else {  
-    $last_name = $_POST["last_name"];
-    if(ctype_alpha($last_name)){
-        $last_name = $mysqli->real_escape_string($_POST["last_name"]);
-    }else{
-        die("Please Enter only alphabets");
-    }
-}  
-
+} elseif(ctype_alpha($_POST["last_name"])){
+    $last_name = $mysqli->real_escape_string($_POST["last_name"]);
+}else{
+    die("Please Enter only alphabets");
+}
+  
 // DOB_D Validation
 
 if(empty($_POST["dob_d"])){
     die("Please Enter a Day"); 
-} elseif(is_int($_POST["dob_d"]) && $_POST["dob_d"] <= 31 && $_POST["dob_d"] >= 1){
+}elseif(is_int($_POST["dob_d"]) && $_POST["dob_d"] <= 31 && $_POST["dob_d"] >= 1){
     $dob_d = $_POST["dob_d"];
 }else{
     die("Please Enter a valid number");
@@ -42,7 +36,7 @@ if(empty($_POST["dob_d"])){
 
 if(empty($_POST["dob_m"])){
     die("Please Enter a Month"); 
-} elseif(is_int($_POST["dob_m"]) && $_POST["dob_m"] <= 12 && $_POST["dob_m"] >= 1){
+}elseif(is_int($_POST["dob_m"]) && $_POST["dob_m"] <= 12 && $_POST["dob_m"] >= 1){
     $dob_m = $_POST["dob_m"];
 }else{
     die("Please Enter a valid number");
@@ -52,13 +46,14 @@ if(empty($_POST["dob_m"])){
 
 if(empty($_POST["dob_y"])){
     die("Please Enter a Year"); 
-} elseif(is_int($_POST["dob_y"]) && $_POST["dob_y"] >= 1922){
+}elseif(is_int($_POST["dob_y"]) && $_POST["dob_y"] >= 1922){
     $dob_y = $_POST["dob_y"];
 }else{
     die("Please Enter a valid number");
 }
 
 // Email Validation
+
 if (empty($_POST["email"])) {
     die("Please enter an Email");
 }elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
@@ -83,7 +78,6 @@ if (empty($_POST["password"])) {
 }
 
 $picture = $_POST["picture"];
-$timestamp = $_POST["timestamp"];
 $country = $_POST["country"];
 $city = $_POST["city"];
 $street = $_POST["street"];
