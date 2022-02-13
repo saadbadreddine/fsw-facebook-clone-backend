@@ -21,7 +21,7 @@ if(empty($_POST["last_name"])){
 }else{
     die("Please Enter only alphabets");
 }
-  
+
 // DOB_D Validation
 
 if(empty($_POST["dob_d"])){
@@ -107,7 +107,7 @@ if(empty($_POST["city"])){
 if(empty($_POST["street"])){
     die("Please Enter a Street Name"); 
 }elseif(ctype_alpha($_POST["street"])){
-    $city = $mysqli->real_escape_string($_POST["street"]);
+    $street = $mysqli->real_escape_string($_POST["street"]);
 }else{
     die("Please Enter only alphabets");
 } 
