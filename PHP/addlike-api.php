@@ -4,16 +4,25 @@ include("db_info.php");
 include("authorization_api.php");
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+$json = file_get_contents('php://input');
+$data = json_decode($json);
 $decoded_key = JWT::decode($jwt, new Key($key, 'HS256'));
 
-if(isset($_POST["post_id"])){
-    $post = $_POST["post_id"];
+if(isset($data -> post_id)){
+    $post = $data -> post_id;
 }else{
     die("Post not found");
 }
 
-if(isset($_POST[$decoded_key])){
-    $user = $_POST[$decoded_key];
+if(isset($decoded_key)){
+    $user = $decoded_key;
 }else{
     die("User not found");
 }
@@ -22,8 +31,12 @@ $query = $mysqli->prepare("INSERT post_id, user_id INTO likes WHERE post_id = ? 
 $query->bind_param("ii", $post, $user);
 $query->execute();
 
+$query->store_result;
+$query->bind_result($like_id);
+$query->fetch();
+
 $array_response = [];
-$array_response = ["status"=>"Like added", "post"=>$post];
+$array_response = ["status"=>"Like added", "like"=>$like_id];
 
 $json_response = json_encode($array_response);
 echo $json_response;
