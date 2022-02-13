@@ -77,10 +77,40 @@ if (empty($_POST["password"])) {
     $password = $_POST["password"];
 }
 
+// Profile Picture Validation
+
 $picture = $_POST["picture"];
-$country = $_POST["country"];
-$city = $_POST["city"];
-$street = $_POST["street"];
+
+// Country Validation
+
+if(empty($_POST["country"])){
+    die("Please Enter a Country Name"); 
+}elseif(ctype_alpha($_POST["country"])){
+    $country = $mysqli->real_escape_string($_POST["country"]);
+}else{
+    die("Please Enter only alphabets");
+} 
+
+
+// City Validation
+
+if(empty($_POST["city"])){
+    die("Please Enter a City Name"); 
+}elseif(ctype_alpha($_POST["city"])){
+    $city = $mysqli->real_escape_string($_POST["city"]);
+}else{
+    die("Please Enter only alphabets");
+} 
+
+// Street Validation
+
+if(empty($_POST["street"])){
+    die("Please Enter a Street Name"); 
+}elseif(ctype_alpha($_POST["street"])){
+    $city = $mysqli->real_escape_string($_POST["street"]);
+}else{
+    die("Please Enter only alphabets");
+} 
 
 $query1 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob_d, dob_m, dob_y, email, password, picture, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"); 
 $query1->bind_param("ssiiisssi", $first_name , $last_name, $dob_d, $dob_m, $dob_y, $email, $password, $picture, $timestamp);
