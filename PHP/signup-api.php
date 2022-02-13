@@ -135,4 +135,10 @@ $array_response["status"] = "Welcome to Facebook";
 $json_response = json_encode($array_response);
 echo $json_response;
 
+$query1->close();
+$query2->close();
+$query3->close();
+$query4->close();
+$mysqli->close();
+
 ?>
