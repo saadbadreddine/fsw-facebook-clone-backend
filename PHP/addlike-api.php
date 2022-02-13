@@ -13,7 +13,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$decoded_key = JWT::decode($jwt, new Key($key, 'HS256'));
 
 if(isset($data -> post_id)){
     $post = $data -> post_id;
@@ -21,14 +20,14 @@ if(isset($data -> post_id)){
     die("Post not found");
 }
 
-if(isset($decoded_key)){
-    $user = $decoded_key;
+if(isset($data -> post_id)){
+    $key = JWT::decode($jwt, new Key($key, 'HS256'));
 }else{
     die("User not found");
 }
 
 $query = $mysqli->prepare("INSERT post_id, user_id INTO likes WHERE post_id = ? AND user_id = ?"); 
-$query->bind_param("ii", $post, $user);
+$query->bind_param("ii", $post, $key);
 $query->execute();
 
 $query->store_result;
