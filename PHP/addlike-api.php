@@ -2,8 +2,17 @@
 
 include("db_info.php");
 
-$post = $_POST["post_id"];
-$user = $_POST["user_id"];
+if(isset($_POST["post_id"])){
+    $post = $_POST["post_id"];
+}else{
+    die("Post not found");
+}
+
+if(isset($_POST["user_id"])){
+    $user = $_POST["user_id"];
+}else{
+    die("User not found");
+}
 
 $query = $mysqli->prepare("INSERT post_id, user_id INTO likes WHERE post_id = ? AND user_id = ?"); 
 $query->bind_param("ii", $post, $user);
