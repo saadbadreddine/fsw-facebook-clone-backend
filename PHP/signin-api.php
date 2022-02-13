@@ -41,7 +41,7 @@ $payload = [
     "aud" => "localhost",
     "iat" => 1356999524,
     "nbf" => 1357000000,
-    "data" => $id
+    "id" => $id
 ];
 
 $jwt = JWT::encode($payload, $key, 'HS256');
