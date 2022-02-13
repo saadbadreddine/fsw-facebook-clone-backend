@@ -2,8 +2,6 @@
 
 include("db_info.php");
 
-include("db_info.php");
-
 $sender_id = 1;
 $receiver_id = 2;
 
