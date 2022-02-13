@@ -30,4 +30,7 @@ $array_response["status"] = $post;
 $json_response = json_encode($array_response);
 echo $json_response;
 
+$query->close();
+$mysqli->close();
+
 ?>
