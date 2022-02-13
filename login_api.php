@@ -1,9 +1,8 @@
 <?php
 
 include("db_info.php");
-require __DIR__ . '/vendor/autoload.php';
+include("authorization_api.php");
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 /*
 if(isset($_POST["email"])){
@@ -32,7 +31,6 @@ $query->bind_result($id);
 $query->fetch();
 
 
-$key = "mypassword";
 $payload = array(
     "iss" => "localhost",
     "aud" => "localhost",
@@ -46,7 +44,7 @@ $jwt = JWT::encode($payload, $key, 'HS256');
 
 //print_r($decoded);
 //$decoded_array = (array) $decoded;
-JWT::$leeway = 60;
+//JWT::$leeway = 60;
 //$decoded = JWT::decode($jwt, new Key($key, 'HS256'));
 
 if($num_rows ==0){
@@ -57,7 +55,7 @@ if($num_rows ==0){
 
 $array_response = [];
 $json_response = json_encode($array_response);
-echo $json_response;
+//echo $json_response;
 echo $jwt;
 
 $query->close();
