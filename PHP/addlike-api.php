@@ -24,4 +24,7 @@ $array_response["status"] = $query;
 $json_response = json_encode($array_response);
 echo $json_response;
 
+$query->close();
+$mysqli->close();
+
 ?>
