@@ -2,9 +2,15 @@
 
 include("db_info.php");
 
+// Validate Picture
 $picture = $_POST["picture"];
-$user_id = $_POST["id"];
 
+
+if(isset($_POST["id"])){
+    $user_id = $_POST["id"];
+}else{
+    die("User not found");
+}
 $query = $mysqli->prepare("UPDATE users  SET picture=? WHERE users.id = ?"); 
 $query->bind_param("si", $picture, $user_id);
 $query->execute();
