@@ -3,9 +3,10 @@
 include("db_info.php");
 include("authorization_api.php");
 use Firebase\JWT\JWT;
-
-if(isset($_POST["id"])){
-    $user_id = $_POST["id"];
+use Firebase\JWT\Key;
+$decoded_key = JWT::decode($jwt, new Key($key, 'HS256'));
+if(isset($_POST[$decoded_key])){
+    $user_id = $_POST[$decoded_key];
 }else{
     die("User not found");
 }
@@ -16,7 +17,7 @@ $query->bind_param("i",$user_id);
 $query->execute();
 
 $array_response = [];
-$array_response["status"] = $query;
+$array_response = ["status" => "User posts", "status" => $query];
 
 $json_response = json_encode($array_response);
 echo $json_response;
