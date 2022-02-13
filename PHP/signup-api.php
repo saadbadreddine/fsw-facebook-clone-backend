@@ -74,7 +74,8 @@ if (empty($_POST["password"])) {
 }elseif(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
     die("Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
 }else{
-    $password = $_POST["password"];
+    $password = $mysqli->real_escape_string($_POST["password"]);
+    $password = hash("sha256", $password);
 }
 
 // Profile Picture Validation
@@ -90,7 +91,6 @@ if(empty($_POST["country"])){
 }else{
     die("Please Enter only alphabets");
 } 
-
 
 // City Validation
 
