@@ -132,7 +132,7 @@ $query4->bind_param("i", $address_id);
 $query4->execute();
 
 $array_response = [];
-$array_response["status"] = "Welcome to Facebook";
+$array_response["status"] = "Welcome to Facebook, please Sign In";
 
 $json_response = json_encode($array_response);
 echo $json_response;
