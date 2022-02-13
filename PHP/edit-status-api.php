@@ -23,7 +23,7 @@ $query->bind_param("si", $updated_post, $post_id);
 $query->execute();
 
 $array_response = [];
-$array_response["status"] = $updated_post;
+$array_response = ["status" => "Status updated", "post" => $updated_post];
 
 $json_response = json_encode($array_response);
 echo $json_response;
