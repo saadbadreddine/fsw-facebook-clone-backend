@@ -2,7 +2,11 @@
 
 include("db_info.php");
 
-$user_id = $_POST["id"];
+if(isset($_POST["id"])){
+    $user_id = $_POST["id"];
+}else{
+    die("User not found");
+}
 
 $query = $mysqli->prepare("SELECT posts.post, posts.timestamp FROM posts WHERE posts.user_id = ?"); 
                            
