@@ -2,13 +2,86 @@
 
 include("db_info.php");
 
-$first_name = $_POST["first_name"];
-$last_name = $_POST["last_name"];
-$dob_d = $_POST["dob_d"];
-$dob_m = $_POST["dob_m"];
-$dob_y = $_POST["dob_y"];
-$email = $_POST["email"];
-$password = $_POST["password"];
+// First Name Validation
+
+if(empty($_POST["first_name"])){
+    die("Please Enter a First Name"); 
+} else {  
+    $first_name = $_POST["first_name"];
+    if(ctype_alpha($first_name)){
+        $first_name = $mysqli->real_escape_string($_POST["first_name"]);
+    }else{
+        die("Please Enter only alphabets");
+    }
+}  
+
+// Last Name Validation
+
+if(empty($_POST["last_name"])){
+    die("Please Enter a Last Name"); 
+} else {  
+    $last_name = $_POST["last_name"];
+    if(ctype_alpha($last_name)){
+        $last_name = $mysqli->real_escape_string($_POST["last_name"]);
+    }else{
+        die("Please Enter only alphabets");
+    }
+}  
+
+// DOB_D Validation
+
+if(empty($_POST["dob_d"])){
+    die("Please Enter a Day"); 
+} elseif(is_int($_POST["dob_d"]) && $_POST["dob_d"] <= 31 && $_POST["dob_d"] >= 1){
+    $dob_d = $_POST["dob_d"];
+}else{
+    die("Please Enter a valid number");
+}
+
+// DOB_M Validation
+
+if(empty($_POST["dob_m"])){
+    die("Please Enter a Month"); 
+} elseif(is_int($_POST["dob_m"]) && $_POST["dob_m"] <= 12 && $_POST["dob_m"] >= 1){
+    $dob_m = $_POST["dob_m"];
+}else{
+    die("Please Enter a valid number");
+}
+
+// DOB_Y Validation
+
+if(empty($_POST["dob_y"])){
+    die("Please Enter a Year"); 
+} elseif(is_int($_POST["dob_y"]) && $_POST["dob_y"] >= 1922){
+    $dob_y = $_POST["dob_y"];
+}else{
+    die("Please Enter a valid number");
+}
+
+// Email Validation
+if (empty($_POST["email"])) {
+    die("Please enter an Email");
+}elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+    die("Invalid Email format");
+}else{
+    $email = $_POST["email"];
+}
+
+// Password Validation
+
+$uppercase = preg_match('@[A-Z]@', $_POST["password"]);
+$lowercase = preg_match('@[a-z]@', $_POST["password"]);
+$number    = preg_match('@[0-9]@', $_POST["password"]);
+$specialChars = preg_match('@[^\w]@', $_POST["password"]);
+
+if (empty($_POST["password"])) {
+    die("Please enter a Password");
+}elseif(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
+    die("Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
+}else{
+    $password = $_POST["password"];
+}
+
 $picture = $_POST["picture"];
 $timestamp = $_POST["timestamp"];
 $country = $_POST["country"];
