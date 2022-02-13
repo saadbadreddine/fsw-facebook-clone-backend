@@ -2,10 +2,17 @@
 
 include("db_info.php");
 include("authorization_api.php");
-use Firebase\JWT\JWT;
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-if(isset($_POST["post_id"])){
-    $post = $_POST["post_id"];
+$json = file_get_contents('php://input');
+$data = json_decode($json);
+
+if(isset($data -> post_id)){
+    $post = $data -> post_id;
 }else{
     die("Post not found");
 }
@@ -14,8 +21,12 @@ $query = $mysqli->prepare("SELECT COUNT(likes_id) FROM likes WHERE post_id = ?")
 $query->bind_param("i", $post);
 $query->execute();
 
+$query->store_result;
+$query->bind_result($count);
+$query->fetch();
+
 $array_response = [];
-$array_response = ["status" => "Find number of likes", "count" => $query];
+$array_response = ["status" => "Find number of likes", "count" => $count];
 
 $json_response = json_encode($array_response);
 echo $json_response;
