@@ -18,7 +18,7 @@ $query->bind_param("i", $decoded_key);
 $query->execute();
 
 $array_response = [];
-$array_response = ["status" => "Get user data", $query];
+$array_response = ["status" => "Get user data","data" => $query];
 
 $json_response = json_encode($array_response);
 echo $json_response;
