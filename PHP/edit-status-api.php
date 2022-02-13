@@ -3,8 +3,18 @@
 include("db_info.php");
 
 // Edit a status(post)
-$post_id= $_POST["post_id"];
-$updated_post =$_POST["post"];
+
+if (empty($_POST["post"])) {
+    die("Post is empty");
+}else{
+    $updated_post =$_POST["post"];
+}
+
+if(isset($_POST["post_id"])){
+    $post_id= $_POST["post_id"];
+}else{
+    die("Post not found");
+}
 
 $query = $mysqli->prepare("UPDATE posts SET post=? WHERE post_id=?");
 $query->bind_param("si", $updated_post, $post_id);
