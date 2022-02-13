@@ -1,26 +1,22 @@
 <?php
-
 include("db_info.php");
 include("authorization_api.php");
 use Firebase\JWT\JWT;
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-/*
-if(isset($_POST["email"])){
-    $email = $mysqli->real_escape_string($_POST["email"]);
-}else{
-    die("Please Sign up");
+$json = file_get_contents('php://input');
+$data = json_decode($json);
+$email = $data -> email;
+$password = $data -> password;
+
+if(empty($data)){
+   die("Error");
 }
-
-if(isset($_POST["password"])){
-    $password = $mysqli->real_escape_string($_POST["password"]);
-    $password = hash("sha256", $password);
-}else{
-    die("Wrong Password");
-}
-*/
-$email = "saad@saad.saad";
-$password = "saadsaadsaad";
-
+    
 $query = $mysqli->prepare("SELECT id FROM users WHERE email = ? And password = ?");
 $query->bind_param("ss", $email, $password);
 $query->execute();
@@ -31,15 +27,7 @@ $query->bind_result($id);
 $query->fetch();
 
 
-$payload = array(
-    "iss" => "localhost",
-    "aud" => "localhost",
-    "iat" => 1356999524,
-    "nbf" => 1357000000,
-    "data" => $id
-);
 
-$jwt = JWT::encode($payload, $key, 'HS256');
 //$decoded = JWT::decode($jwt, new Key($key, 'HS256'));
 
 //print_r($decoded);
@@ -47,16 +35,24 @@ $jwt = JWT::encode($payload, $key, 'HS256');
 //JWT::$leeway = 60;
 //$decoded = JWT::decode($jwt, new Key($key, 'HS256'));
 
-if($num_rows ==0){
-    $array_response["status"] = "User not found, please sign up.";
+if($num_rows == 0){
+    $array_response = ["status" => "User not found, please sign up."];
 }else{
-    $array_response["status"] = "Logged In";
+    $payload = array(
+    "iss" => "localhost",
+    "aud" => "localhost",
+    "iat" => 1356999524,
+    "nbf" => 1357000000,
+    "data" => $id);
+    $jwt = JWT::encode($payload, $key, 'HS256');
+    //echo $jwt;
+    $array_response = ["status" => "Logged in", "token" => $jwt];
 }
 
-$array_response = [];
-$json_response = json_encode($array_response);
-//echo $json_response;
-echo $jwt;
+
+echo json_encode($array_response);
+
+
 
 $query->close();
 $mysqli->close();
