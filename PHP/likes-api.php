@@ -2,7 +2,11 @@
 
 include("db_info.php");
 
-$post = $_POST["post_id"];
+if(isset($_POST["post_id"])){
+    $post = $_POST["post_id"];
+}else{
+    die("Post not found");
+}
 
 $query = $mysqli->prepare("SELECT COUNT(post_id) FROM likes WHERE post_id = ?"); 
 $query->bind_param("i", $post);
