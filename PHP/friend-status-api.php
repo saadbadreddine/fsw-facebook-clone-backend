@@ -1,6 +1,8 @@
 <?php
 
 include("db_info.php");
+include("authorization_api.php");
+use Firebase\JWT\JWT;
 
 if(isset($_POST["post"])){
     $post = $_POST["post"];

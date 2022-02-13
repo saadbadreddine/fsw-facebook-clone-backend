@@ -1,6 +1,8 @@
 <?php
 
 include("db_info.php");
+include("authorization_api.php");
+use Firebase\JWT\JWT;
 
 if(isset($_POST["id"])){
     $user_id = $_POST["id"];

@@ -1,6 +1,8 @@
 <?php
 
 include("db_info.php");
+include("authorization_api.php");
+use Firebase\JWT\JWT;
 
 if(isset($_POST["email"])){
     $email = $mysqli->real_escape_string($_POST["email"]);
