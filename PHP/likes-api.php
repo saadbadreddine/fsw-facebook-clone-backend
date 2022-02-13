@@ -10,12 +10,12 @@ if(isset($_POST["post_id"])){
     die("Post not found");
 }
 
-$query = $mysqli->prepare("SELECT COUNT(post_id) FROM likes WHERE post_id = ?"); 
+$query = $mysqli->prepare("SELECT COUNT(likes_id) FROM likes WHERE post_id = ?"); 
 $query->bind_param("i", $post);
 $query->execute();
 
 $array_response = [];
-$array_response["status"] = $query;
+$array_response = ["status" => "Find number of likes", "count" => $query];
 
 $json_response = json_encode($array_response);
 echo $json_response;
