@@ -28,7 +28,7 @@ $query3->execute();
 
 $address_id = $query3->store_result();
 
-$query4 = $mysqli->prepare("INSERT INTO addresses(address_id) VALUES (?)");
+$query4 = $mysqli->prepare("INSERT INTO users(address_id) VALUES (?)");
 $query4->bind_param("i", $address_id);
 $query4->execute();
 
