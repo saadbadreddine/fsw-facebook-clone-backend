@@ -26,12 +26,22 @@ $num_rows = $query->num_rows;
 $query->bind_result($id);
 $query->fetch();
 
+$payload = [
+    "iss" => "localhost",
+    "aud" => "localhost",
+    "iat" => 1356999524,
+    "nbf" => 1357000000,
+    "data" => $id
+];
+
+$jwt = JWT::encode($payload, $key, 'HS256');
+
 $array_response = [];
 
 if($num_rows ==0){
     $array_response["status"] = "User not found, please sign up.";
 }else{
-    $array_response["status"] = "Logged In";
+    $array_response = ["status" => "Logged In", "token" => $jwt];
 }
 
 $json_response = json_encode($array_response);
