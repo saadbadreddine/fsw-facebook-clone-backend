@@ -5,7 +5,7 @@ include("db_info.php");
 $post = $_POST["post_id"];
 
 $query = $mysqli->prepare("SELECT COUNT(post_id) FROM likes WHERE post_id = ?"); 
-$query->bind_param("ii", $post);
+$query->bind_param("i", $post);
 $query->execute();
 
 $array_response = [];
