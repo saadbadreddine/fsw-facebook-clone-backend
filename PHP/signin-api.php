@@ -11,27 +11,25 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$email = $data -> email;
-$password = $data -> password;
 
-if(empty($email)){
+if(empty($data -> email)){
     die("Please Sign up");
 }else{
-    $email = $mysqli -> real_escape_string($email);
+    $email = $data -> email;
 }
 
-if(empty($password)){
+if(empty($data -> password)){
     die("Wrong Password");
 }else{
-    $password = $mysqli->real_escape_string($password);
-    $password = hash("sha256", $password);
+    $password = $data -> password;
+    $password = hash("sha256", $data -> email);
 }
 
 $query = $mysqli->prepare("SELECT id FROM users WHERE email = ? And password = ?");
 $query->bind_param("ss", $email, $password);
 $query->execute();
 
-$query->store_result;
+$query->store_result();
 $num_rows = $query->num_rows;
 $query->bind_result($id);
 $query->fetch();
