@@ -11,6 +11,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
+$email = $data -> email;
+$password = $data -> password;
 
 if(empty($data -> email)){
     die("Please Sign up");
@@ -22,33 +24,31 @@ if(empty($data -> password)){
     die("Wrong Password");
 }else{
     $password = $data -> password;
-    $password = hash("sha256", $data -> email);
+    $password = hash("sha256", $password);
+    echo $password;
 }
 
-$query = $mysqli->prepare("SELECT id FROM users WHERE email = ? And password = ?");
+$query = $mysqli->prepare("SELECT id FROM users WHERE email = ? AND password = ?");
 $query->bind_param("ss", $email, $password);
 $query->execute();
-
 $query->store_result();
 $num_rows = $query->num_rows;
 $query->bind_result($id);
 $query->fetch();
 
-$payload = [
-    "iss" => "localhost",
-    "aud" => "localhost",
-    "iat" => 1356999524,
-    "nbf" => 1357000000,
-    "id" => $id
-];
-
-$jwt = JWT::encode($payload, $key, 'HS256');
-
 $array_response = [];
 
-if($num_rows ==0){
-    $array_response["status"] = "User not found, please sign up.";
+if($num_rows == 0){
+    $array_response = ["status" => "User not found, please sign up."];
 }else{
+    $payload = [
+        "iss" => "localhost",
+        "aud" => "localhost",
+        "iat" => 1356999524,
+        "nbf" => 1357000000,
+        "data" => $id
+    ];
+    $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Logged In", "token" => $jwt];
 }
 
