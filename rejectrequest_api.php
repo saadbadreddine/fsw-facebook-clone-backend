@@ -21,14 +21,15 @@ if (!empty($data->sender) && !empty($data->receiver)) {
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
   $decoded_sender = $decoded_sender->id;
 
-  $query = $mysqli->prepare("INSERT INTO blocks(sender, receiver) VALUES (?, ?)");
-  $query->bind_param("ii", $decoded_sender, $receiver_id);
+  $query = $mysqli->prepare("DELETE FROM friendships WHERE sender = ? AND receiver = ?");
+  $query->bind_param("ii", $receiver_id, $decoded_sender);
   $query->execute();
 
-  $array_response["status"] = "User Blocked";
+  $array_response["status"] = "Friend Request Rejected";
 } else {
   $array_response["status"] = "Error";
 }
+
 $json_response = json_encode($array_response);
 echo $json_response;
 $query->close();

@@ -14,21 +14,27 @@ $json = file_get_contents("php://input");
 $data = json_decode($json);
 $array_response = [];
 
-if (!empty($data->sender) && !empty($data->receiver)) {
+if (!empty($data->sender)) {
   $sender_id = $data->sender;
-  $receiver_id = $data->receiver;
 
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
   $decoded_sender = $decoded_sender->id;
 
-  $query = $mysqli->prepare("INSERT INTO blocks(sender, receiver) VALUES (?, ?)");
-  $query->bind_param("ii", $decoded_sender, $receiver_id);
+  $query = $mysqli->prepare("SELECT id, first_name, last_name, picture
+  FROM users INNER JOIN friendships ON users.id = friendships.sender OR users.id = friendships.receiver
+  WHERE friendships.receiver = ? AND friendships.accepted = 0 AND id != ?");
+  $query->bind_param("ii", $decoded_sender, $decoded_sender);
   $query->execute();
 
-  $array_response["status"] = "User Blocked";
+  $array = $query->get_result();
+
+  while ($data = $array->fetch_assoc()) {
+    $array_response[] = $data;
+  }
 } else {
   $array_response["status"] = "Error";
 }
+
 $json_response = json_encode($array_response);
 echo $json_response;
 $query->close();
