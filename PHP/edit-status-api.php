@@ -24,12 +24,8 @@ $query = $mysqli->prepare("UPDATE posts SET post=? WHERE post_id=?");
 $query->bind_param("si", $updated_post, $post_id);
 $query->execute();
 
-$query->store_result;
-$query->bind_result($like_id);
-$query->fetch();
-
 $array_response = [];
-$array_response = ["status" => "Status updated", "like" => $like_id];
+$array_response = ["status" => "Status updated", "post" => $updated_post];
 
 $json_response = json_encode($array_response);
 echo $json_response;
