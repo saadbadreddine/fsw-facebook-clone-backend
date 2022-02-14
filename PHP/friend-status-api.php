@@ -14,27 +14,31 @@ $json = file_get_contents('php://input');
 $data = json_decode($json);
 
 if(isset($data -> id)){
-    $key = JWT::decode($jwt, new Key($key, 'HS256'));
+    $id = $data -> id;
+    $key = JWT::decode($id, new Key($key, 'HS256'));
+    $key = $key -> data;
 }else{
     die("User not found");
 }
 $blocked = false;
 
-$query = $mysqli->prepare("SELECT posts.post, posts.timestamp, users.id, users.first_name, users.last_name, users.picture 
-                            FROM posts JOIN users ON posts.user_id = ?
-                            JOIN friendships ON (friendships.sender = ? OR friendships.receiver = ?) 
-                            AND friendships.accepted = 1 AND users.id NOT IN (SELECT blocks.sender, blocks.receiver 
-                            FROM blocks WHERE blocks.sender = ? OR blocks.receiver = ?)"); 
+$query = $mysqli->prepare("SELECT DISTINCT posts.post, posts.timestamp, posts.user_id, users.first_name, users.last_name, users.picture 
+                            FROM posts JOIN users ON posts.user_id = users.id
+                            JOIN friendships ON (posts.user_id = friendships.sender OR posts.user_id = friendships.receiver) 
+                            WHERE(friendships.sender = ? OR friendships.receiver = ?)
+                            AND friendships.accepted = ? AND users.id NOT IN (SELECT blocks.receiver 
+                            FROM blocks WHERE blocks.receiver = ? OR blocks.sender = ?);"); 
                            
-$query->bind_param("iiibb",$key, $key, $key, $blocked, $blocked);
+$query->bind_param("iiiii",$key,  $key, $key, $key, $key);
 $query->execute();
 
-$query->store_result;
-$query->bind_result($post);
-$query->fetch();
+$array = $query->get_result();
 
 $array_response = [];
-$array_response = ["status" => "List of posts", "posts" => $post];
+while($data = $array->fetch_assoc()){
+    $array_response[] = $data;
+}
+print_r($array_response);
 
 $json_response = json_encode($array_response);
 echo $json_response;
