@@ -17,6 +17,7 @@ if(isset($data -> id)){
     $id = $data -> id;
     $key = JWT::decode($id, new Key($key, 'HS256'));
     $key = $key -> data;
+    echo $key;
 }else{
     die("User not found");
 }
@@ -26,10 +27,10 @@ $query = $mysqli->prepare("SELECT DISTINCT posts.post, posts.timestamp, posts.us
                             FROM posts JOIN users ON posts.user_id = users.id
                             JOIN friendships ON (posts.user_id = friendships.sender OR posts.user_id = friendships.receiver) 
                             WHERE(friendships.sender = ? OR friendships.receiver = ?)
-                            AND friendships.accepted = ? AND users.id NOT IN (SELECT blocks.receiver 
+                            AND friendships.accepted = 1 AND users.id NOT IN (SELECT blocks.receiver 
                             FROM blocks WHERE blocks.receiver = ? OR blocks.sender = ?);"); 
                            
-$query->bind_param("iiiii",$key,  $key, $key, $key, $key);
+$query->bind_param("iiii", $key, $key, $key, $key);
 $query->execute();
 
 $array = $query->get_result();
@@ -38,8 +39,6 @@ $array_response = [];
 while($data = $array->fetch_assoc()){
     $array_response[] = $data;
 }
-print_r($array_response);
-
 $json_response = json_encode($array_response);
 echo $json_response;
 
