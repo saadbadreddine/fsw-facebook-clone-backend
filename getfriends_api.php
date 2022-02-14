@@ -1,15 +1,28 @@
 <?php
 
 include("db_info.php");
+include("authorization_api.php");
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$user_id = 1;
+$json = file_get_contents('php://input');
+$data = json_decode($json);
+$sender_id  = $data -> sender;
+
+$decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
+$decoded_sender = $decoded_sender -> id;
 
 $query = $mysqli -> prepare("SELECT id, first_name, last_name, picture
 FROM users INNER JOIN friendships ON users.id = friendships.sender OR users.id = friendships.receiver
 LEFT JOIN blocks ON  users.id = blocks.receiver OR users.id = blocks.sender
 WHERE (friendships.sender = ? OR friendships.receiver = ?) AND friendships.accepted = 1 AND id != ?
 AND id NOT IN (SELECT blocks.sender FROM blocks WHERE blocks.receiver = ?) ");
-$query->bind_param("iiii", $user_id, $user_id, $user_id, $user_id);
+$query->bind_param("iiii", $decoded_sender, $decoded_sender, $decoded_sender, $decoded_sender);
 $query->execute();
 
 $array = $query->get_result();
