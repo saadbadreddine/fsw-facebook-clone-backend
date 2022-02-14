@@ -18,8 +18,6 @@ $receiver_id = $data -> receiver;
 
 $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
 $decoded_sender = $decoded_sender -> id;
-$decoded_receiver = JWT::decode($receiver_id, new Key($key, 'HS256'));
-$decoded_receiver = $decoded_receiver -> id;
 
 
 if(empty($data)){
@@ -29,7 +27,7 @@ if(empty($data)){
 $accepted = false;
 
 $query = $mysqli -> prepare("INSERT INTO friendships(sender, receiver, accepted) VALUES (?, ?, ?)"); 
-$query->bind_param("iib", $decoded_sender, $decoded_receiver, $accepted);
+$query->bind_param("iib", $decoded_sender, $receiver_id, $accepted);
 $query->execute();
 
 $array_response = [];

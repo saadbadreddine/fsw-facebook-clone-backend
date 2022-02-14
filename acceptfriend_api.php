@@ -17,8 +17,6 @@ $receiver_id = $data -> receiver;
 
 $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
 $decoded_sender = $decoded_sender -> id;
-$decoded_receiver = JWT::decode($receiver_id, new Key($key, 'HS256'));
-$decoded_receiver = $decoded_receiver -> id;
 
 if(empty($data)){
    die("Error");
@@ -27,7 +25,7 @@ if(empty($data)){
 $accepted = 1;
 
 $query = $mysqli -> prepare("UPDATE friendships SET accepted = ? WHERE sender = ? AND receiver = ?");
-$query->bind_param("iii", $accepted, $decoded_receiver, $decoded_sender);
+$query->bind_param("iii", $accepted, $receiver_id, $decoded_sender);
 $query->execute();
 
 $array_response = [];

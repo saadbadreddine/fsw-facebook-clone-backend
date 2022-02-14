@@ -17,13 +17,11 @@ $receiver_id = $data -> receiver;
 
 $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
 $decoded_sender = $decoded_sender -> id;
-$decoded_receiver = JWT::decode($receiver_id, new Key($key, 'HS256'));
-$decoded_receiver = $decoded_receiver -> id;
 
 
 $query = $mysqli -> prepare("DELETE FROM friendships WHERE (sender = ? AND receiver = ?) 
 OR (sender = ? AND receiver = ?)");
-$query->bind_param("iiii", $decoded_sender, $decoded_receiver, $decoded_receiver, $decoded_sender );
+$query->bind_param("iiii", $decoded_sender, $receiver_id, $receiver_id, $decoded_sender );
 $query->execute();
 
 $array_response = [];

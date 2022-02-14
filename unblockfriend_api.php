@@ -17,13 +17,11 @@ $receiver_id = $data -> receiver;
 
 $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
 $decoded_sender = $decoded_sender -> id;
-$decoded_receiver = JWT::decode($receiver_id, new Key($key, 'HS256'));
-$decoded_receiver = $decoded_receiver -> id;
 
 $unblock = true;
 
 $query = $mysqli -> prepare("DELETE FROM blocks WHERE (sender = ? AND receiver = ?)"); 
-$query->bind_param("ii", $decoded_sender, $decoded_receiver);
+$query->bind_param("ii", $decoded_sender, $receiver_id);
 $query->execute();
 
 $array_response = [];
