@@ -27,9 +27,7 @@ $query->bind_result($id);
 $query->fetch();
 
 
-
 //$decoded = JWT::decode($jwt, new Key($key, 'HS256'));
-
 //print_r($decoded);
 //$decoded_array = (array) $decoded;
 //JWT::$leeway = 60;
@@ -43,10 +41,10 @@ if($num_rows == 0){
     "aud" => "localhost",
     "iat" => 1356999524,
     "nbf" => 1357000000,
-    "data" => $id);
+    "id" => $id);
     $jwt = JWT::encode($payload, $key, 'HS256');
-    //echo $jwt;
-    $array_response = ["status" => "Logged in", "token" => $jwt];
+    $x = gettype($jwt);
+    $array_response = ["status" => "Logged in", "token" => $jwt, "x" => $x];
 }
 
 
