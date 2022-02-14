@@ -14,7 +14,9 @@ $json = file_get_contents('php://input');
 $data = json_decode($json);
 
 if(isset($data -> id)){
-    $key = JWT::decode($jwt, new Key($key, 'HS256'));
+    $id = $data -> id;
+    $key = JWT::decode($id, new Key($key, 'HS256'));
+    $key = $key -> data;
 }else{
     die("User not found");
 }
@@ -27,12 +29,8 @@ $query = $mysqli->prepare("UPDATE users  SET picture=? WHERE users.id = ?");
 $query->bind_param("si", $picture, $key);
 $query->execute();
 
-$query->store_result;
-$query->bind_result($image);
-$query->fetch();
-
 $array_response = [];
-$array_response = ["status" => "Show Picture", "picture" => $image];
+$array_response = ["status" => "Profile Picture Updated"];
 
 $json_response = json_encode($array_response);
 echo $json_response;
