@@ -20,22 +20,20 @@ if(isset($data -> post_id)){
     die("Post not found");
 }
 
-if(isset($data -> post_id)){
-    $key = JWT::decode($jwt, new Key($key, 'HS256'));
+if(isset($data -> user_id)){
+    $user_id = $data -> user_id;
+    $key = JWT::decode($user_id, new Key($key, 'HS256'));
+    $key = $key -> data;
 }else{
     die("User not found");
 }
 
-$query = $mysqli->prepare("INSERT post_id, user_id INTO likes WHERE post_id = ? AND user_id = ?"); 
+$query = $mysqli->prepare("INSERT INTO likes(post_id, user_id) VALUES (?, ?)"); 
 $query->bind_param("ii", $post, $key);
 $query->execute();
 
-$query->store_result;
-$query->bind_result($like_id);
-$query->fetch();
-
 $array_response = [];
-$array_response = ["status"=>"Like added", "like"=>$like_id];
+$array_response = ["status"=>"Like added"];
 
 $json_response = json_encode($array_response);
 echo $json_response;
