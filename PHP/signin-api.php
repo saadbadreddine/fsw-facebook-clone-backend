@@ -11,8 +11,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$email = $data -> email;
-$password = $data -> password;
 
 if(empty($data -> email)){
     die("Please Sign up");
@@ -25,7 +23,6 @@ if(empty($data -> password)){
 }else{
     $password = $data -> password;
     $password = hash("sha256", $password);
-    echo $password;
 }
 
 $query = $mysqli->prepare("SELECT id FROM users WHERE email = ? AND password = ?");
