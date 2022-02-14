@@ -14,22 +14,24 @@ $json = file_get_contents('php://input');
 $data = json_decode($json);
 
 if(isset($data -> id)){
-    $key = JWT::decode($jwt, new Key($key, 'HS256'));
+    $id = $data -> id;
+    $key = JWT::decode($id, new Key($key, 'HS256'));
+    $key = $key -> data;
 }else{
     die("User not found");
 }
 
 $query = $mysqli->prepare("SELECT first_name, last_name, dob_d, dob_m, dob_y, email, picture, addresses.country, addresses.city, 
-                            addresses.street FROM users JOIN addresses ON  users.id = addresses.user_id WHERE id = ?"); 
+                            addresses.street FROM users JOIN addresses ON  users.address_id = addresses.address_id WHERE id = ?"); 
 $query->bind_param("i", $key);
 $query->execute();
 
-$query->store_result;
-$query->bind_result($data);
-$query->fetch();
+$array = $query->get_result();
 
 $array_response = [];
-$array_response = ["status" => "Get user data","data" => $data];
+while($data = $array->fetch_assoc()){
+    $array_response[] = $data;
+}
 
 $json_response = json_encode($array_response);
 echo $json_response;
