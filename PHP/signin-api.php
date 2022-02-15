@@ -11,23 +11,28 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-
-if(empty($data -> email)){
-    die("Please Sign up");
-}else{
+if(isset($data -> email)){
     $email = $data -> email;
+    
+}else{
+    $emailErr = "Please enter an email";
+    $array_response = ["status" => $emailErr];
+    echo json_encode($array_response);
 }
 
-if(empty($data -> password)){
-    die("Wrong Password");
-}else{
+if(isset($data -> password)){
     $password = $data -> password;
     $password = hash("sha256", $password);
+}else{
+    $passwordErr = "Please enter a Password";
+    $array_response = ["status" => $passwordErr];
+    echo json_encode($array_response);
 }
 
 $query = $mysqli->prepare("SELECT id FROM users WHERE email = ? AND password = ?");
 $query->bind_param("ss", $email, $password);
 $query->execute();
+
 $query->store_result();
 $num_rows = $query->num_rows;
 $query->bind_result($id);
@@ -36,17 +41,17 @@ $query->fetch();
 $array_response = [];
 
 if($num_rows == 0){
-    $array_response = ["status" => "User not found, please sign up."];
+    $array_response = ["status" => "User not found"];
 }else{
     $payload = [
         "iss" => "localhost",
         "aud" => "localhost",
         "iat" => 1356999524,
         "nbf" => 1357000000,
-        "data" => $id
+        "data" => $key
     ];
     $jwt = JWT::encode($payload, $key, 'HS256');
-    $array_response = ["status" => "Logged In", "token" => $jwt];
+    $array_response = ["status" => "Logged In", "token" => $jwt, "error" => false];
 }
 
 $json_response = json_encode($array_response);
