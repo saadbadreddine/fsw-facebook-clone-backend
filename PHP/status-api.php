@@ -12,27 +12,43 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$user_id = $data -> user_id;
+$user_id = $data -> id;
+
 if(isset($user_id)){
     $decoded_id = JWT::decode($user_id, new Key($key, 'HS256'));
     $decoded_id = $decoded_id -> data;
 }else{
-    die("User not found");
+    $idErr = "User not found";
+    $array_response = array("status" => $idErr);
+    $json_response = json_encode($array_response);
+    echo $json_response;
 }
 
 // Add a status(post)
 
-if (empty($data -> post)) {
-    die("Post is empty");
-}else{
+if (isset($data -> post)) {
     $post = $data -> post;
+}else{
+    $postErr = "Post is empty";
+    $array_response = array("status" => $postErr);
+    $json_response = json_encode($array_response);
+    echo $json_response;
 }
 
 $query = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
 $query->bind_param("si", $post, $decoded_id);
 $query->execute();
 
-$array_response = array("status" => "Post added successfully", "post" => $post);
+$post_id = $mysqli->insert_id;
+$query1 = $mysqli->prepare("SELECT timestamp FROM posts WHERE post_id = ?");
+$query1->bind_param("i", $post_id);
+$query1->execute();
+
+$query1->store_result();
+$query1->bind_result($timestamp);
+$query1->fetch();
+
+$array_response = array("status" => "Post added successfully", "post" => $post, "post_id" => $post_id, "timestamp" => $timestamp);
 
 $json_response = json_encode($array_response);
 echo $json_response;
