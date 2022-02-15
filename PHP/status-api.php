@@ -35,25 +35,26 @@ if (isset($data -> post)) {
     echo $json_response;
 }
 
-$query = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
-$query->bind_param("si", $post, $decoded_id);
-$query->execute();
-
-$post_id = $mysqli->insert_id;
-$query1 = $mysqli->prepare("SELECT timestamp FROM posts WHERE post_id = ?");
-$query1->bind_param("i", $post_id);
+$query1 = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
+$query1->bind_param("si", $post, $decoded_id);
 $query1->execute();
 
-$query1->store_result();
-$query1->bind_result($timestamp);
-$query1->fetch();
+$post_id = $mysqli->insert_id;
+$query2 = $mysqli->prepare("SELECT timestamp FROM posts WHERE post_id = ?");
+$query2->bind_param("i", $post_id);
+$query2->execute();
+
+$query2->store_result();
+$query2->bind_result($timestamp);
+$query2->fetch();
 
 $array_response = array("status" => "Post added successfully", "post" => $post, "post_id" => $post_id, "timestamp" => $timestamp);
 
 $json_response = json_encode($array_response);
 echo $json_response;
 
-$query->close();
+$query1->close();
+$query2->close();
 $mysqli->close();
 
 ?>
