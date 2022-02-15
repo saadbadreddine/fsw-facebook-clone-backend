@@ -2,6 +2,7 @@
 
 include("db_info.php");
 include("authorization_api.php");
+use Firebase\JWT\JWT;
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
@@ -15,26 +16,26 @@ $data = json_decode($json);
 // First Name Validation
 
 if(empty($data->first_name)){
-    die("Please Enter a First Name"); 
+    $first_nameErr = "Please Enter a First Name"; 
 }elseif(ctype_alpha($data->first_name)){
     $first_name = $mysqli->real_escape_string($data->first_name);
 }else{
-    die("Please Enter only alphabets");
+    $first_nameErr = "Please Enter only alphabets";
 }  
 
 // Last Name Validation
 
 if(empty($data->last_name)){
-    die("Please Enter a Last Name"); 
+    $last_nameErr = "Please Enter a Last Name"; 
 } elseif(ctype_alpha($data->last_name)){
     $last_name = $mysqli->real_escape_string($data->last_name);
 }else{
-    die("Please Enter only alphabets");
+    $last_nameErr = "Please Enter only alphabets";
 }
 
 // DOB Validation
 
-function isDate($string) {
+function isDate($string){
     $matches = array();
     $pattern = '/^([0-9]{1,2})\\/([0-9]{1,2})\\/([0-9]{4})$/';
     if (!preg_match($pattern, $string, $matches)) return false;
@@ -42,7 +43,7 @@ function isDate($string) {
     return true;
 }
 if(!isDate($data->dob)){
-    die("Please Enter a Date"); 
+    $dobErr = "Please Enter a Date"; 
 }else{
     $dob = $data->dob;
 }
@@ -50,9 +51,9 @@ if(!isDate($data->dob)){
 // Email Validation
 
 if (empty($data->email)) {
-    die("Please enter an Email");
+    $emailErr = "Please enter an Email";
 }elseif (!filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
-    die("Invalid Email format");
+    $emailErr = "Invalid Email format";
 }else{
     $email = $mysqli->real_escape_string($data->email);
 }
@@ -65,9 +66,9 @@ $number    = preg_match('@[0-9]@', $data -> password);
 $specialChars = preg_match('@[^\w]@', $data -> password);
 
 if (empty($data->password)) {
-    die("Please enter a Password");
+    $passswordErr = "Please enter a Password";
 }elseif(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($data -> password) < 8) {
-    die("Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.");
+    $passwordErr = "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.";
 }else{
     $password = $mysqli->real_escape_string($data->password);
     $password = hash("sha256", $password);
@@ -80,51 +81,67 @@ $picture = $data->picture;
 // Country Validation
 
 if(empty($data -> country)){
-    die("Please Enter a Country Name"); 
+    $countryErr = "Please Enter a Country Name"; 
 }elseif(ctype_alpha($data->country)){
     $country = $mysqli->real_escape_string($data->country);
 }else{
-    die("Country should contain only alphabets");
+    $countryErr = "Country should contain only alphabets";
 } 
 
 // City Validation
 
 if(empty($data->city)){
-    die("Please Enter a City Name"); 
+    $cityErr = "Please Enter a City Name"; 
 }elseif(ctype_alpha($data->city)){
     $city = $mysqli->real_escape_string($data->city);
 }else{
-    die("City should contain only alphabets");
+    $cityErr = "City should contain only alphabets";
 } 
 
 // Street Validation
 
 if(empty($data->street)){
-    die("Please Enter a Street Name"); 
+    $streetErr = "Please Enter a Street Name"; 
 }elseif(ctype_alpha($data -> street)){
     $street = $mysqli->real_escape_string($data->street);
 }else{
-    die("Street should contain only alphabets");
+    $streetErr = "Street should contain only alphabets";
+}
+$query1 = $mysqli->prepare("SELECT email FROM users WHERE email = ?"); 
+$query1->bind_param("s", $email);
+$query1->execute();
+
+if($email == $query1){
+    $emailErr = "Email already registered";
+    $array_response = ["status" => $emailErr];
+    echo json_encode($array_response);
 }
 
-$query1 = $mysqli->prepare("INSERT INTO addresses(country, city, street) VALUES (?, ?, ?)"); 
-$query1->bind_param("sss", $country, $city, $street);
-$query1->execute();
+$query2 = $mysqli->prepare("INSERT INTO addresses(country, city, street) VALUES (?, ?, ?)"); 
+$query2->bind_param("sss", $country, $city, $street);
+$query2->execute();
 $address_id = $mysqli->insert_id;
 
-$query2 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, picture, address_id) VALUES (?, ?, ?, ?, ?, ?, ?)"); 
-$query2->bind_param("ssssssi", $first_name , $last_name, $dob, $email, $password, $picture, $address_id);
-$query2->execute();
+$query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, picture, address_id) VALUES (?, ?, ?, ?, ?, ?, ?)"); 
+$query3->bind_param("ssssssi", $first_name , $last_name, $dob, $email, $password, $picture, $address_id);
+$query3->execute();
 
-$array_response = [];
-$array_response = ["status" => "Congratulations"];
-
+$payload = [
+    "iss" => "localhost",
+    "aud" => "localhost",
+    "iat" => 1356999524,
+    "nbf" => 1357000000,
+    "data" => $key
+];
+$jwt = JWT::encode($payload, $key, 'HS256');
+$array_response = ["status" => "Welcome to Facebook", "token" => $jwt];
 
 $json_response = json_encode($array_response);
 echo $json_response;
 
 $query1->close();
 $query2->close();
+$query3->close();
 $mysqli->close();
 
 ?>
