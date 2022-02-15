@@ -133,38 +133,39 @@ if(empty($data->street)){
 $query1 = $mysqli->prepare("SELECT email FROM users WHERE email = ?"); 
 $query1->bind_param("s", $email);
 $query1->execute();
+$result = $query1->get_result();
 
-if($email == $query1){
+if($result != null){
     $emailErr = "Email already registered";
     $array_response = ["status" => $emailErr];
     echo json_encode($array_response);
+}else{
+    $query2 = $mysqli->prepare("INSERT INTO addresses(country, city, street) VALUES (?, ?, ?)"); 
+    $query2->bind_param("sss", $country, $city, $street);
+    $query2->execute();
+    $address_id = $mysqli->insert_id;
+
+    $query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, picture, address_id) VALUES (?, ?, ?, ?, ?, ?, ?)"); 
+    $query3->bind_param("ssssssi", $first_name , $last_name, $dob, $email, $password, $picture, $address_id);
+    $query3->execute();
+
+    $payload = [
+        "iss" => "localhost",
+        "aud" => "localhost",
+        "iat" => 1356999524,
+        "nbf" => 1357000000,
+        "data" => $key
+    ];
+    $jwt = JWT::encode($payload, $key, 'HS256');
+    $array_response = ["status" => "Welcome to Facebook", "token" => $jwt];
+
+    $json_response = json_encode($array_response);
+    echo $json_response;
+
+    $query2->close();
+    $query3->close();
 }
-
-$query2 = $mysqli->prepare("INSERT INTO addresses(country, city, street) VALUES (?, ?, ?)"); 
-$query2->bind_param("sss", $country, $city, $street);
-$query2->execute();
-$address_id = $mysqli->insert_id;
-
-$query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, picture, address_id) VALUES (?, ?, ?, ?, ?, ?, ?)"); 
-$query3->bind_param("ssssssi", $first_name , $last_name, $dob, $email, $password, $picture, $address_id);
-$query3->execute();
-
-$payload = [
-    "iss" => "localhost",
-    "aud" => "localhost",
-    "iat" => 1356999524,
-    "nbf" => 1357000000,
-    "data" => $key
-];
-$jwt = JWT::encode($payload, $key, 'HS256');
-$array_response = ["status" => "Welcome to Facebook", "token" => $jwt];
-
-$json_response = json_encode($array_response);
-echo $json_response;
-
 $query1->close();
-$query2->close();
-$query3->close();
 $mysqli->close();
 
 ?>
