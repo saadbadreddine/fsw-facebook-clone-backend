@@ -15,8 +15,12 @@ $data = json_decode($json);
 
 // First Name Validation
 
+
+
 if(empty($data->first_name)){
     $first_nameErr = "Please Enter a First Name"; 
+    $array_response = ["status" => $first_nameErr];
+    echo json_encode($array_response);
 }elseif(ctype_alpha($data->first_name)){
     $first_name = $mysqli->real_escape_string($data->first_name);
 }else{
@@ -27,6 +31,8 @@ if(empty($data->first_name)){
 
 if(empty($data->last_name)){
     $last_nameErr = "Please Enter a Last Name"; 
+    $array_response = ["status" => $last_nameErr];
+    echo json_encode($array_response);
 } elseif(ctype_alpha($data->last_name)){
     $last_name = $mysqli->real_escape_string($data->last_name);
 }else{
@@ -43,7 +49,10 @@ function isDate($string){
     return true;
 }
 if(!isDate($data->dob)){
+   
     $dobErr = "Please Enter a Date"; 
+    $array_response = ["status" => $dobErr];
+    echo json_encode($array_response);
 }else{
     $dob = $data->dob;
 }
@@ -51,7 +60,9 @@ if(!isDate($data->dob)){
 // Email Validation
 
 if (empty($data->email)) {
-    $emailErr = "Please enter an Email";
+    $emailErr = "Please enter an email";
+    $array_response = ["status" => $emailErr];
+    echo json_encode($array_response);
 }elseif (!filter_var($data->email, FILTER_VALIDATE_EMAIL)) {
     $emailErr = "Invalid Email format";
 }else{
@@ -67,8 +78,12 @@ $specialChars = preg_match('@[^\w]@', $data -> password);
 
 if (empty($data->password)) {
     $passswordErr = "Please enter a Password";
+    $array_response = ["status" => $passswordErr];
+    echo json_encode($array_response);
 }elseif(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($data -> password) < 8) {
     $passwordErr = "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.";
+    $array_response = ["status" => $passswordErr];
+    echo json_encode($array_response);
 }else{
     $password = $mysqli->real_escape_string($data->password);
     $password = hash("sha256", $password);
@@ -82,6 +97,8 @@ $picture = $data->picture;
 
 if(empty($data -> country)){
     $countryErr = "Please Enter a Country Name"; 
+    $array_response = ["status" => $countryErr];
+    echo json_encode($array_response);
 }elseif(ctype_alpha($data->country)){
     $country = $mysqli->real_escape_string($data->country);
 }else{
@@ -92,6 +109,8 @@ if(empty($data -> country)){
 
 if(empty($data->city)){
     $cityErr = "Please Enter a City Name"; 
+    $array_response = ["status" => $cityErr];
+    echo json_encode($array_response);
 }elseif(ctype_alpha($data->city)){
     $city = $mysqli->real_escape_string($data->city);
 }else{
@@ -102,10 +121,14 @@ if(empty($data->city)){
 
 if(empty($data->street)){
     $streetErr = "Please Enter a Street Name"; 
+    $array_response = ["status" => $streetErr];
+    echo json_encode($array_response);
 }elseif(ctype_alpha($data -> street)){
     $street = $mysqli->real_escape_string($data->street);
 }else{
     $streetErr = "Street should contain only alphabets";
+    $array_response = ["status" => $streetErr];
+    echo json_encode($array_response);
 }
 $query1 = $mysqli->prepare("SELECT email FROM users WHERE email = ?"); 
 $query1->bind_param("s", $email);
