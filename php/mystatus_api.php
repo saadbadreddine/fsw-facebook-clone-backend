@@ -15,7 +15,7 @@ $data = json_decode($json);
 
 if(isset($data -> sender)){
     $sender_id = $data -> sender;
-    $decoded_sender = JWT::decode($id, new Key($key, 'HS256'));
+    $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
     $decoded_sender = $decoded_sender -> id;
 }else{
     $userErr = "User not found";
@@ -23,7 +23,7 @@ if(isset($data -> sender)){
     echo json_encode($array_response);
 }
 
-$query = $mysqli->prepare("SELECT id, first_name, last_name FROM users WHERE id != ?"); 
+$query = $mysqli->prepare("SELECT posts.post, posts.timestamp FROM posts WHERE posts.user_id = ?"); 
                            
 $query->bind_param("i",$decoded_sender);
 $query->execute();
