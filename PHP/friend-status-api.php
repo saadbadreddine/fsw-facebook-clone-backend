@@ -32,7 +32,7 @@ $query = $mysqli->prepare("SELECT DISTINCT posts.post, posts.timestamp, posts.us
                             AND friendships.accepted = 1 AND users.id NOT IN (SELECT blocks.receiver 
                             FROM blocks WHERE blocks.receiver = ? OR blocks.sender = ?) ORDER BY timestamp DESC;"); 
                            
-$query->bind_param("iiii", $key, $key, $key, $key);
+$query->bind_param("iiii", $decoded_sender, $decoded_sender, $decoded_sender, $decoded_sender);
 $query->execute();
 $array = $query->get_result();
 
