@@ -15,17 +15,31 @@ $data = json_decode($json);
 
 if(isset($data -> sender)){
     $sender_id = $data -> sender;
-    $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
+    $decoded_sender = JWT::decode($id, new Key($key, 'HS256'));
     $decoded_sender = $decoded_sender -> id;
 }else{
     $userErr = "User not found";
-    $array_response = ["status" => $userErr];
+}
+
+if(isset($data->first_name)){
+    $first_name = $data->first_name;
+}else{
+    $fnameErr = "First name not found";
+    $array_response = ["status" => $fnameErr];
     echo json_encode($array_response);
 }
 
-$query = $mysqli->prepare("SELECT posts.post, posts.timestamp FROM posts WHERE posts.user_id = ?"); 
+if(isset($data->last_name)){
+    $last_name = $data->last_name;
+}else{
+    $lnameErr = "Last name not found"; 
+    $array_response = ["status" => $lnameErr];
+    echo json_encode($array_response);
+}
+
+$query = $mysqli->prepare("SELECT id, first_name, last_name FROM users WHERE id != ? AND ($first_name = ? OR $last_name = ?"); 
                            
-$query->bind_param("i",$decoded_sender);
+$query->bind_param("iss",$decoded_sender, $first_name, $last_name);
 $query->execute();
 
 $array = $query->get_result();
