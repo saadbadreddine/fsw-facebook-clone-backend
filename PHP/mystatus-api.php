@@ -13,10 +13,10 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json = file_get_contents('php://input');
 $data = json_decode($json);
 
-if(isset($data -> id)){
-    $id = $data -> id;
-    $key = JWT::decode($id, new Key($key, 'HS256'));
-    $key = $key -> data;
+if(isset($data -> sender)){
+    $sender_id = $data -> sender;
+    $decoded_sender = JWT::decode($id, new Key($key, 'HS256'));
+    $decoded_sender = $decoded_sender -> id;
 }else{
     $userErr = "User not found";
 }
