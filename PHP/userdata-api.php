@@ -18,7 +18,10 @@ if(isset($data -> id)){
     $key = JWT::decode($id, new Key($key, 'HS256'));
     $key = $key -> data;
 }else{
-    die("User not found");
+    $userErr = "User not found";
+    $array_response = array("status" => $userErr);
+    $json_response = json_encode($array_response);
+    echo $json_response;
 }
 
 $query = $mysqli->prepare("SELECT first_name, last_name, dob_d, dob_m, dob_y, email, picture, addresses.country, addresses.city, 
