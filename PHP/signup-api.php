@@ -12,10 +12,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json = file_get_contents('php://input');
 $data = json_decode($json);
 
-
 // First Name Validation
-
-
 
 if(empty($data->first_name)){
     $first_nameErr = "Please Enter a First Name"; 
@@ -89,10 +86,6 @@ if (empty($data->password)) {
     $password = hash("sha256", $password);
 }
 
-// Profile Picture Validation
-
-$picture = $data->picture;
-
 // Country Validation
 
 if(empty($data -> country)){
@@ -129,6 +122,7 @@ if(empty($data->street)){
     $streetErr = "Street should contain only alphabets";
     $array_response = ["status" => $streetErr];
     echo json_encode($array_response);
+
 }
 $query1 = $mysqli->prepare("SELECT email FROM users WHERE email = ?"); 
 $query1->bind_param("s", $email);
@@ -147,8 +141,8 @@ if($num_rows != 0){
     $query2->execute();
     $address_id = $mysqli->insert_id;
 
-    $query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, picture, address_id) VALUES (?, ?, ?, ?, ?, ?, ?)"); 
-    $query3->bind_param("ssssssi", $first_name , $last_name, $dob, $email, $password, $picture, $address_id);
+    $query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, address_id) VALUES (?, ?, , ?, ?, ?, ?)"); 
+    $query3->bind_param("sssssi", $first_name , $last_name, $dob, $email, $password, $address_id);
     $query3->execute();
 
     $payload = [
@@ -156,7 +150,7 @@ if($num_rows != 0){
         "aud" => "localhost",
         "iat" => 1356999524,
         "nbf" => 1357000000,
-        "data" => $key
+        "id" => $id
     ];
     $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Welcome to Facebook", "token" => $jwt];
