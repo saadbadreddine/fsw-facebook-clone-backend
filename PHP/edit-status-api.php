@@ -12,11 +12,11 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$user_id = $data -> user_id;
+$sender = $data -> sender;
 
-if(isset($user_id)){
-    $decoded_id = JWT::decode($user_id, new Key($key, 'HS256'));
-    $decoded_id = $decoded_id -> data;
+if(isset($sender)){
+    $decoded_sender = JWT::decode($sender, new Key($key, 'HS256'));
+    $decoded_sender = $decoded_sender -> id;
 }else{
     $idErr = "User not found";
     $array_response = array("status" => $idErr);
@@ -37,7 +37,7 @@ if(isset($data -> post_id)){
 }
 
 $query1 = $mysqli->prepare("UPDATE posts SET post=? WHERE post_id=? AND user_id=?");
-$query1->bind_param("sii", $updated_post, $post_id, $decoded_id);
+$query1->bind_param("sii", $updated_post, $post_id, $decoded_sender);
 $query1->execute();
 
 $query2 = $mysqli->prepare("SELECT timestamp FROM posts WHERE post_id = ?");
