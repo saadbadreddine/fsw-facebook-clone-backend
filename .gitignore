@@ -1,2 +1,9 @@
 /node_modules
 /package-lock.json
+/frontend-testing
+/fsw-facebook-clone-frontend
+/login_api.php
+/friendstatuses_api.php
+/mystatuses_api.php
+/editstatus_api.php
+/addstatus_api.php
