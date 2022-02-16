@@ -12,11 +12,11 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$user_id = $data -> id;
+$sender_id = $data -> sender;
 
-if(isset($user_id)){
-    $decoded_id = JWT::decode($user_id, new Key($key, 'HS256'));
-    $decoded_id = $decoded_id -> data;
+if(isset($sender_id)){
+    $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
+    $decoded_sender = $decoded_sender -> id;
 }else{
     $idErr = "User not found";
     $array_response = array("status" => $idErr);
@@ -36,7 +36,7 @@ if (isset($data -> post)) {
 }
 
 $query1 = $mysqli->prepare("INSERT INTO posts(post, user_id) VALUES (?, ?)"); 
-$query1->bind_param("si", $post, $decoded_id);
+$query1->bind_param("si", $post, $decoded_sender);
 $query1->execute();
 
 $post_id = $mysqli->insert_id;
