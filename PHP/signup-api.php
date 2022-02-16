@@ -133,9 +133,11 @@ if(empty($data->street)){
 $query1 = $mysqli->prepare("SELECT email FROM users WHERE email = ?"); 
 $query1->bind_param("s", $email);
 $query1->execute();
-$result = $query1->get_result();
-
-if($result != null){
+$query1->store_result();
+$num_rows = $query1->num_rows;
+$query1->bind_result($id);
+$query1->fetch();
+if($num_rows != 0){
     $emailErr = "Email already registered";
     $array_response = ["status" => $emailErr];
     echo json_encode($array_response);
