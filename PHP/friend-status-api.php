@@ -13,10 +13,11 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $json = file_get_contents('php://input');
 $data = json_decode($json);
 
-if(isset($data -> id)){
-    $id = $data -> id;
-    $key = JWT::decode($id, new Key($key, 'HS256'));
-    $key = $key -> data;
+if(isset($data -> sender)){
+    $sender_id = $data -> sender;
+    $decoded_sender = JWT::decode($sender_id, new Key($key, 'HS256'));
+    $decoded_sender = $decoded_sender -> data;
+    echo $key;
 }else{
     $userErr = "User not found";
     $array_response = array("status" => $userErr);
@@ -24,7 +25,6 @@ if(isset($data -> id)){
     echo $json_response;
 }
 $blocked = false;
-
 $query = $mysqli->prepare("SELECT DISTINCT posts.post, posts.timestamp, posts.user_id, users.first_name, users.last_name, users.picture 
                             FROM posts JOIN users ON posts.user_id = users.id
                             JOIN friendships ON (posts.user_id = friendships.sender OR posts.user_id = friendships.receiver) 
@@ -34,7 +34,6 @@ $query = $mysqli->prepare("SELECT DISTINCT posts.post, posts.timestamp, posts.us
                            
 $query->bind_param("iiii", $key, $key, $key, $key);
 $query->execute();
-
 $array = $query->get_result();
 
 $array_response = [];
