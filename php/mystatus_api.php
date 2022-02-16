@@ -19,9 +19,11 @@ if(isset($data -> sender)){
     $decoded_sender = $decoded_sender -> id;
 }else{
     $userErr = "User not found";
+    $array_response = ["status" => $userErr];
+    echo json_encode($array_response);
 }
 
-$query = $mysqli->prepare("SELECT posts.post, posts.timestamp FROM posts WHERE posts.user_id = ?"); 
+$query = $mysqli->prepare("SELECT id, first_name, last_name FROM users WHERE id != ?"); 
                            
 $query->bind_param("i",$decoded_sender);
 $query->execute();
