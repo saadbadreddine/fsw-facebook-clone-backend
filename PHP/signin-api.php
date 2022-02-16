@@ -13,7 +13,6 @@ $json = file_get_contents('php://input');
 $data = json_decode($json);
 if(isset($data -> email)){
     $email = $data -> email;
-    
 }else{
     $emailErr = "Please enter an email";
     $array_response = ["status" => $emailErr];
@@ -38,8 +37,6 @@ $num_rows = $query->num_rows;
 $query->bind_result($id);
 $query->fetch();
 
-$array_response = [];
-
 if($num_rows == 0){
     $array_response = ["status" => "User not found"];
 }else{
@@ -48,12 +45,11 @@ if($num_rows == 0){
         "aud" => "localhost",
         "iat" => 1356999524,
         "nbf" => 1357000000,
-        "data" => $key
+        "id" => $id
     ];
     $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Logged In", "token" => $jwt, "error" => false];
 }
-
 $json_response = json_encode($array_response);
 echo $json_response;
 
