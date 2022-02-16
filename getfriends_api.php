@@ -24,8 +24,9 @@ if (!empty($data->sender)) {
   FROM users INNER JOIN friendships ON users.id = friendships.sender OR users.id = friendships.receiver
   LEFT JOIN blocks ON  users.id = blocks.receiver OR users.id = blocks.sender
   WHERE (friendships.sender = ? OR friendships.receiver = ?) AND friendships.accepted = 1 AND id != ?
-  AND id NOT IN (SELECT blocks.sender FROM blocks WHERE blocks.receiver = ?) ");
-  $query->bind_param("iiii", $decoded_sender, $decoded_sender, $decoded_sender, $decoded_sender);
+  AND id NOT IN (SELECT blocks.sender FROM blocks WHERE blocks.receiver = ?)
+  AND id NOT IN (SELECT blocks.receiver FROM blocks WHERE blocks.sender = ?)");
+  $query->bind_param("iiiii", $decoded_sender, $decoded_sender, $decoded_sender, $decoded_sender, $decoded_sender);
   $query->execute();
 
   $array = $query->get_result();
