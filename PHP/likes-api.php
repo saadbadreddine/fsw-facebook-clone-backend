@@ -14,7 +14,7 @@ $data = json_decode($json);
 if(isset($data -> post_id)){
     $post = $data -> post_id;
 }else{
-    die("Post not found");
+    $postErr = "Post not found";
 }
 
 $query = $mysqli->prepare("SELECT COUNT(like_id) FROM likes WHERE post_id = ?"); 
