@@ -18,6 +18,9 @@ if(isset($data -> post_id)){
     $post = $data -> post_id;
 }else{
     $postErr = "Post not found";
+    $array_response = array("status" => $postErr);
+    $json_response = json_encode($array_response);
+    echo $json_response;
 }
 
 if(isset($data -> user_id)){
@@ -26,6 +29,9 @@ if(isset($data -> user_id)){
     $key = $key -> data;
 }else{
     $userErr = "User not found";
+    $array_response = array("status" => $userErr);
+    $json_response = json_encode($array_response);
+    echo $json_response;
 }
 
 $query = $mysqli->prepare("INSERT INTO likes(post_id, user_id) VALUES (?, ?)"); 
