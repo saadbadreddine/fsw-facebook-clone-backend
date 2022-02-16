@@ -141,7 +141,7 @@ if($num_rows != 0){
     $query2->execute();
     $address_id = $mysqli->insert_id;
 
-    $query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, address_id) VALUES (?, ?, , ?, ?, ?, ?)"); 
+    $query3 = $mysqli->prepare("INSERT INTO users(first_name, last_name, dob, email, password, address_id) VALUES (?, ?, ?, ?, ?, ?)"); 
     $query3->bind_param("sssssi", $first_name , $last_name, $dob, $email, $password, $address_id);
     $query3->execute();
 
