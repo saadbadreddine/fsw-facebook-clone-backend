@@ -24,7 +24,7 @@ if(isset($data -> id)){
     echo $json_response;
 }
 
-$query = $mysqli->prepare("SELECT first_name, last_name, dob_d, dob_m, dob_y, email, picture, addresses.country, addresses.city, 
+$query = $mysqli->prepare("SELECT first_name, last_name, dob, email, picture, addresses.country, addresses.city, 
                             addresses.street FROM users JOIN addresses ON  users.address_id = addresses.address_id WHERE id = ?"); 
 $query->bind_param("i", $key);
 $query->execute();
