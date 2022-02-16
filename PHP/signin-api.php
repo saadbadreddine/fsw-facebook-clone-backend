@@ -50,6 +50,7 @@ if($num_rows == 0){
     $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Logged In", "token" => $jwt, "error" => false];
 }
+
 $json_response = json_encode($array_response);
 echo $json_response;
 
