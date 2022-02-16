@@ -23,7 +23,7 @@ if(isset($data -> sender)){
 
 $query = $mysqli->prepare("SELECT posts.post, posts.timestamp FROM posts WHERE posts.user_id = ?"); 
                            
-$query->bind_param("i",$key);
+$query->bind_param("i",$decoded_sender);
 $query->execute();
 
 $array = $query->get_result();
