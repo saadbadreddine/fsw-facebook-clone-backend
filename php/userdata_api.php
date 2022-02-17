@@ -16,7 +16,7 @@ $data = json_decode($json);
 if (isset($data->sender)) {
   $sender_id = $data->sender;
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
-  $decoded_sender = $decoded_sender->id;
+  $decoded_sender = $decoded_sender->token;
 } else {
   $userErr = "User not found";
   $array_response = ["status" => $userErr];
