@@ -29,9 +29,11 @@ if (isset($data->name)) {
   echo json_encode($array_response);
 }
 
-$query = $mysqli->prepare("SELECT id, first_name, last_name, picture FROM users WHERE id != ? AND (first_name = ? OR last_name = ?)");
+$query = $mysqli->prepare("SELECT id, first_name, last_name, picture FROM users WHERE id != ? AND (first_name = ? OR last_name = ?)
+                          AND id NOT IN (SELECT sender FROM friendships WHERE sender = ?)
+                          AND id NOT IN (SELECT receiver FROM friendships WHERE receiver = ?)");
 
-$query->bind_param("iss", $decoded_sender, $name, $name);
+$query->bind_param("issii", $decoded_sender, $name, $name, $decoded_sender, $decoded_sender);
 $query->execute();
 
 $array = $query->get_result();
