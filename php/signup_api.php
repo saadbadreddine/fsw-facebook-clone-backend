@@ -79,7 +79,7 @@ if (empty($data->password)) {
     echo json_encode($array_response);
 }elseif(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($data -> password) < 8) {
     $passwordErr = "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.";
-    $array_response = ["status" => $passswordErr];
+    $array_response = ["status" => $passwordErr];
     echo json_encode($array_response);
 }else{
     $password = $mysqli->real_escape_string($data->password);
@@ -150,7 +150,7 @@ if($num_rows != 0){
         "aud" => "localhost",
         "iat" => 1356999524,
         "nbf" => 1357000000,
-        "id" => $id
+        "token" => $id
     ];
     $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Welcome to Facebook", "token" => $jwt];

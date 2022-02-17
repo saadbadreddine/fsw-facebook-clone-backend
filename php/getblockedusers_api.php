@@ -18,7 +18,7 @@ if (!empty($data->sender)) {
   $sender_id = $data->sender;
 
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
-  $decoded_sender = $decoded_sender->id;
+  $decoded_sender = $decoded_sender->token;
 
   $query = $mysqli->prepare("SELECT id, first_name, last_name, picture
   FROM users INNER JOIN blocks ON users.id = blocks.receiver WHERE blocks.sender = ?");

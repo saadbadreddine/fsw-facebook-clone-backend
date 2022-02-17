@@ -45,7 +45,7 @@ if($num_rows == 0){
         "aud" => "localhost",
         "iat" => 1356999524,
         "nbf" => 1357000000,
-        "id" => $id
+        "token" => $id
     ];
     $jwt = JWT::encode($payload, $key, 'HS256');
     $array_response = ["status" => "Logged In", "token" => $jwt, "error" => false];
