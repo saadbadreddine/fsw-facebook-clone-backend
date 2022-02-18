@@ -14,10 +14,10 @@ $json = file_get_contents("php://input");
 $data = json_decode($json);
 $array_response = [];
 
-if (!empty($data->sender) && !empty($data->receiver)) {
+if (isset($data->sender) && isset($data->receiver)) {
   $sender_id = $data->sender;
   $receiver_id = $data->receiver;
-  
+
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
   $decoded_sender = $decoded_sender->id;
 

@@ -14,13 +14,13 @@ $json = file_get_contents("php://input");
 $data = json_decode($json);
 $array_response = [];
 
-if (!empty($data->sender)) {
+if (isset($data->sender)) {
   $sender_id = $data->sender;
 
   $decoded_sender = JWT::decode($sender_id, new Key($key, "HS256"));
   $decoded_sender = $decoded_sender->id;
 
-  $query = $mysqli->prepare("SELECT id, first_name, last_name, picture
+  $query = $mysqli->prepare("SELECT Distinct id, first_name, last_name, picture
   FROM users INNER JOIN friendships ON users.id = friendships.sender OR users.id = friendships.receiver
   LEFT JOIN blocks ON  users.id = blocks.receiver OR users.id = blocks.sender
   WHERE (friendships.sender = ? OR friendships.receiver = ?) AND friendships.accepted = 1 AND id != ?

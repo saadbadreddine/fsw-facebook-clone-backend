@@ -30,10 +30,10 @@ if (isset($data->name)) {
 }
 
 $query = $mysqli->prepare("SELECT id, first_name, last_name, picture FROM users WHERE id != ? AND (first_name = ? OR last_name = ?)
-                          AND id NOT IN (SELECT sender FROM friendships WHERE sender = ?)
-                          AND id NOT IN (SELECT receiver FROM friendships WHERE receiver = ?)");
+                          AND id NOT IN (SELECT blocks.sender FROM blocks WHERE blocks.receiver != ?)
+                          AND id NOT IN (SELECT blocks.receiver FROM blocks WHERE blocks.sender != ?)");
 
-$query->bind_param("issii", $decoded_sender, $name, $name, $decoded_sender, $decoded_sender);
+$query->bind_param("issii", $decoded_sender, $name, $name, $name, $name);
 $query->execute();
 
 $array = $query->get_result();
